@@ -273,49 +273,62 @@
             const logo = new Image();
             logo.crossOrigin = 'anonymous';
             logo.onload = function() {
-                // Draw background with gradient
-                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-                gradient.addColorStop(0, '#2ECC71');
-                gradient.addColorStop(0.5, '#27AE60');
-                gradient.addColorStop(1, '#229954');
-                ctx.fillStyle = gradient;
+                // Draw background - solid green (matching the example)
+                ctx.fillStyle = '#2ECC71';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 // Add gold stripe
                 const stripeHeight = currentFormat === 'phone' ? 200 : 150;
                 const stripeY = currentFormat === 'phone' ? canvas.height / 2 - 100 : canvas.height / 2 - 75;
-                ctx.fillStyle = '#F39C12';
+                ctx.fillStyle = '#D4A017';
                 ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
 
                 // Add subtle shine effect on gold stripe
                 const shineGradient = ctx.createLinearGradient(0, stripeY, 0, stripeY + stripeHeight);
-                shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+                shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
                 shineGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
                 shineGradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
                 ctx.fillStyle = shineGradient;
                 ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
 
                 // Add shadow effect for stripe depth
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
                 ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 8);
                 
                 // Add subtle top highlight
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-                ctx.fillRect(0, stripeY, canvas.width, 3);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                ctx.fillRect(0, stripeY - 3, canvas.width, 3);
 
                 // Draw the actual logo with white circular background
                 const logoSize = currentFormat === 'phone' ? 280 : 220;
                 const logoX = canvas.width / 2 - logoSize / 2;
                 const logoY = currentFormat === 'phone' ? 200 : 100;
                 
-                // Draw white circle behind logo with shadow
+                // Draw white rounded square behind logo with shadow
+                const boxPadding = 30;
+                const boxSize = logoSize + boxPadding * 2;
+                const boxX = canvas.width / 2 - boxSize / 2;
+                const boxY = logoY - boxPadding;
+                const borderRadius = 20;
+                
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                ctx.shadowBlur = 30;
+                ctx.shadowBlur = 20;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 10;
                 ctx.fillStyle = 'white';
+                
+                // Rounded rectangle for logo background
                 ctx.beginPath();
-                ctx.arc(canvas.width / 2, logoY + logoSize / 2, logoSize / 2 + 15, 0, Math.PI * 2);
+                ctx.moveTo(boxX + borderRadius, boxY);
+                ctx.lineTo(boxX + boxSize - borderRadius, boxY);
+                ctx.quadraticCurveTo(boxX + boxSize, boxY, boxX + boxSize, boxY + borderRadius);
+                ctx.lineTo(boxX + boxSize, boxY + boxSize - borderRadius);
+                ctx.quadraticCurveTo(boxX + boxSize, boxY + boxSize, boxX + boxSize - borderRadius, boxY + boxSize);
+                ctx.lineTo(boxX + borderRadius, boxY + boxSize);
+                ctx.quadraticCurveTo(boxX, boxY + boxSize, boxX, boxY + boxSize - borderRadius);
+                ctx.lineTo(boxX, boxY + borderRadius);
+                ctx.quadraticCurveTo(boxX, boxY, boxX + borderRadius, boxY);
+                ctx.closePath();
                 ctx.fill();
                 
                 // Reset shadow
@@ -326,13 +339,14 @@
                 
                 ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
 
-                // Draw motivation text
-                ctx.fillStyle = 'white';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                
-                const textY = currentFormat === 'phone' ? canvas.height / 2 + 250 : canvas.height / 2 + 120;
-                const maxWidth = canvas.width - 120;
+                // Calculate text box dimensions
+                let fontSize = currentFormat === 'phone' ? 110 : 130;
+                if (motivation.length > 30) fontSize = currentFormat === 'phone' ? 95 : 110;
+                if (motivation.length > 50) fontSize = currentFormat === 'phone' ? 80 : 95;
+                if (motivation.length > 80) fontSize = currentFormat === 'phone' ? 70 : 80;
+
+                ctx.font = `bold ${fontSize}px Arial Black, Arial`;
+                const maxWidth = canvas.width - 160;
                 
                 // Word wrap function
                 function wrapText(text, maxWidth) {
@@ -354,69 +368,77 @@
                     return lines;
                 }
 
-                // Dynamic font size based on text length - much larger, bold sizes
-                let fontSize = currentFormat === 'phone' ? 110 : 130;
-                if (motivation.length > 30) fontSize = currentFormat === 'phone' ? 95 : 110;
-                if (motivation.length > 50) fontSize = currentFormat === 'phone' ? 80 : 95;
-                if (motivation.length > 80) fontSize = currentFormat === 'phone' ? 70 : 80;
-
-                ctx.font = `bold ${fontSize}px Arial Black, Arial`;
                 const lines = wrapText(motivation.toUpperCase(), maxWidth);
+                const lineHeight = fontSize * 1.2;
+                const totalTextHeight = lines.length * lineHeight;
                 
-                const lineHeight = fontSize * 1.3;
-                const totalHeight = lines.length * lineHeight;
-                let currentY = textY - (totalHeight / 2) + (lineHeight / 2);
-
-                // Draw text with enhanced shadow and outline
-                lines.forEach(line => {
-                    // Outer glow
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                    ctx.shadowBlur = 15;
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 0;
-                    
-                    // Dark shadow
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-                    ctx.fillText(line, canvas.width / 2 + 4, currentY + 4);
-                    
-                    // Reset shadow for main text
-                    ctx.shadowColor = 'transparent';
-                    ctx.shadowBlur = 0;
-                    
-                    // Main text
-                    ctx.fillStyle = 'white';
-                    ctx.fillText(line, canvas.width / 2, currentY);
-                    
-                    // Subtle highlight on top
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                    ctx.fillText(line, canvas.width / 2, currentY - 2);
-                    
-                    currentY += lineHeight;
-                });
-
-                // Add "Castlelyons 2025" text at bottom with enhanced styling
-                ctx.font = `bold ${currentFormat === 'phone' ? 45 : 55}px Arial`;
-                const bottomY = currentFormat === 'phone' ? canvas.height - 100 : canvas.height - 80;
+                // Position the text box
+                const textBoxY = currentFormat === 'phone' ? canvas.height / 2 + 200 : canvas.height / 2 + 50;
+                const textBoxPadding = currentFormat === 'phone' ? 60 : 50;
+                const textBoxWidth = canvas.width - 80;
+                const textBoxHeight = totalTextHeight + textBoxPadding * 2;
+                const textBoxX = 40;
+                const textBoxRadius = 40;
                 
-                // Shadow
+                // Draw dark rounded rectangle for text background
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-                ctx.shadowBlur = 10;
+                ctx.shadowBlur = 25;
                 ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 3;
+                ctx.shadowOffsetY = 15;
+                ctx.fillStyle = 'rgba(20, 35, 30, 0.92)';
                 
-                // Gold outline
-                ctx.fillStyle = '#F39C12';
-                ctx.fillText('CASTLELYONS 2025', canvas.width / 2 + 2, bottomY + 2);
+                ctx.beginPath();
+                ctx.moveTo(textBoxX + textBoxRadius, textBoxY);
+                ctx.lineTo(textBoxX + textBoxWidth - textBoxRadius, textBoxY);
+                ctx.quadraticCurveTo(textBoxX + textBoxWidth, textBoxY, textBoxX + textBoxWidth, textBoxY + textBoxRadius);
+                ctx.lineTo(textBoxX + textBoxWidth, textBoxY + textBoxHeight - textBoxRadius);
+                ctx.quadraticCurveTo(textBoxX + textBoxWidth, textBoxY + textBoxHeight, textBoxX + textBoxWidth - textBoxRadius, textBoxY + textBoxHeight);
+                ctx.lineTo(textBoxX + textBoxRadius, textBoxY + textBoxHeight);
+                ctx.quadraticCurveTo(textBoxX, textBoxY + textBoxHeight, textBoxX, textBoxY + textBoxHeight - textBoxRadius);
+                ctx.lineTo(textBoxX, textBoxY + textBoxRadius);
+                ctx.quadraticCurveTo(textBoxX, textBoxY, textBoxX + textBoxRadius, textBoxY);
+                ctx.closePath();
+                ctx.fill();
                 
                 // Reset shadow
                 ctx.shadowColor = 'transparent';
                 ctx.shadowBlur = 0;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 0;
-                
-                // White main text
+
+                // Draw motivation text inside the dark box
                 ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                let currentY = textBoxY + textBoxPadding + (totalTextHeight / 2) - ((lines.length - 1) * lineHeight / 2);
+
+                // Draw text - clean and simple white text
+                lines.forEach(line => {
+                    ctx.fillStyle = 'white';
+                    ctx.fillText(line, canvas.width / 2, currentY);
+                    currentY += lineHeight;
+                });
+
+                // Add "Castlelyons 2025" text at bottom - gold color to match stripe
+                ctx.font = `bold ${currentFormat === 'phone' ? 50 : 60}px Arial Black, Arial`;
+                const bottomY = currentFormat === 'phone' ? canvas.height - 80 : canvas.height - 60;
+                
+                // Simple shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 3;
+                
+                // Gold text
+                ctx.fillStyle = '#D4A017';
                 ctx.fillText('CASTLELYONS 2025', canvas.width / 2, bottomY);
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
 
                 // Show preview
                 generatedImageUrl = canvas.toDataURL('image/png');
