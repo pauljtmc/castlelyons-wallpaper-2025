@@ -249,9 +249,6 @@
             });
         });
 
-        // Base64 encoded logo - YOU'LL NEED TO REPLACE THIS
-        const logoBase64 = 'data:image/png;base64,YOUR_LOGO_BASE64_HERE';
-
         function generateImage() {
             const motivation = document.getElementById('motivation').value.trim();
             
@@ -272,42 +269,34 @@
                 canvas.height = 1080;
             }
 
-            // Draw background with gradient
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#2ECC71');
-            gradient.addColorStop(0.5, '#27AE60');
-            gradient.addColorStop(1, '#229954');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Load the logo image
+            const logo = new Image();
+            logo.crossOrigin = 'anonymous';
+            logo.onload = function() {
+                // Draw background with gradient
+                const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                gradient.addColorStop(0, '#2ECC71');
+                gradient.addColorStop(0.5, '#27AE60');
+                gradient.addColorStop(1, '#229954');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Add gold stripe
-            const stripeHeight = currentFormat === 'phone' ? 200 : 150;
-            const stripeY = currentFormat === 'phone' ? canvas.height / 2 - 100 : canvas.height / 2 - 75;
-            ctx.fillStyle = '#F39C12';
-            ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
+                // Add gold stripe
+                const stripeHeight = currentFormat === 'phone' ? 200 : 150;
+                const stripeY = currentFormat === 'phone' ? canvas.height / 2 - 100 : canvas.height / 2 - 75;
+                ctx.fillStyle = '#F39C12';
+                ctx.fillRect(0, stripeY, canvas.width, canvas.height);
 
-            // Add shadow effect for stripe
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 10);
+                // Add shadow effect for stripe
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 10);
 
-            // Load and draw logo placeholder (semi-transparent circle for now)
-            const logoSize = currentFormat === 'phone' ? 200 : 150;
-            const logoX = canvas.width / 2;
-            const logoY = currentFormat === 'phone' ? 300 : 200;
-            
-            // Draw white circle background for logo
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.beginPath();
-            ctx.arc(logoX, logoY, logoSize / 2, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Add text "LOGO HERE" in the circle
-            ctx.fillStyle = '#2ECC71';
-            ctx.font = 'bold 40px Arial';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('LOGO', logoX, logoY - 15);
-            ctx.fillText('HERE', logoX, logoY + 25);
+                // Draw the actual logo
+                const logoSize = currentFormat === 'phone' ? 280 : 220;
+                const logoX = canvas.width / 2 - logoSize / 2;
+                const logoY = currentFormat === 'phone' ? 200 : 100;
+                
+                ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
 
                 // Draw motivation text
                 ctx.fillStyle = 'white';
