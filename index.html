@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Castlelyons Motivation Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Black', Arial, sans-serif;
+            background: linear-gradient(135deg, #2ECC71 0%, #F39C12 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #2ECC71;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2em;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #F39C12;
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 3px solid #2ECC71;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #F39C12;
+        }
+
+        .format-section {
+            margin-bottom: 30px;
+        }
+
+        .format-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .format-btn {
+            padding: 15px;
+            border: 3px solid #2ECC71;
+            background: white;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .format-btn:hover {
+            background: #2ECC71;
+            color: white;
+        }
+
+        .format-btn.active {
+            background: #2ECC71;
+            color: white;
+            border-color: #2ECC71;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #2ECC71, #27AE60);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        .preview {
+            display: none;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .preview.show {
+            display: block;
+        }
+
+        .preview h3 {
+            color: #2ECC71;
+            margin-bottom: 15px;
+        }
+
+        #previewImage {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .download-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #F39C12, #E67E22);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
+        }
+
+        canvas {
+            display: none;
+        }
+
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #F39C12;
+        }
+
+        .info p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Castlelyons GAA</h1>
+        <div class="subtitle">County Final Motivation Generator</div>
+        
+        <div class="info">
+            <p><strong>Instructions:</strong> Type your motivational message below, choose your format (phone or desktop), then click Generate. Download your personalized wallpaper and set it as your screensaver!</p>
+        </div>
+
+        <label for="motivation">Your Motivation Message:</label>
+        <textarea id="motivation" placeholder="Enter your motivation here... e.g., 'Leave it all on the field' or 'One team, one dream, county champions 2025!'"></textarea>
+
+        <div class="format-section">
+            <label>Choose Format:</label>
+            <div class="format-buttons">
+                <button class="format-btn active" data-format="phone">
+                    📱 Phone<br><small>(1080x1920)</small>
+                </button>
+                <button class="format-btn" data-format="desktop">
+                    💻 Desktop<br><small>(1920x1080)</small>
+                </button>
+            </div>
+        </div>
+
+        <button class="generate-btn" onclick="generateImage()">⚡ Generate Wallpaper</button>
+
+        <div class="preview" id="preview">
+            <h3>Your Motivation Wallpaper:</h3>
+            <img id="previewImage" alt="Generated wallpaper">
+            <br>
+            <button class="download-btn" onclick="downloadImage()">⬇️ Download Wallpaper</button>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script>
+        let currentFormat = 'phone';
+        let generatedImageUrl = null;
+
+        // Handle format selection
+        document.querySelectorAll('.format-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.format-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFormat = this.dataset.format;
+            });
+        });
+
+        // Base64 encoded logo - YOU'LL NEED TO REPLACE THIS
+        const logoBase64 = 'data:image/png;base64,YOUR_LOGO_BASE64_HERE';
+
+        function generateImage() {
+            const motivation = document.getElementById('motivation').value.trim();
+            
+            if (!motivation) {
+                alert('Please enter a motivation message!');
+                return;
+            }
+
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas dimensions based on format
+            if (currentFormat === 'phone') {
+                canvas.width = 1080;
+                canvas.height = 1920;
+            } else {
+                canvas.width = 1920;
+                canvas.height = 1080;
+            }
+
+            // Draw background with gradient
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, '#2ECC71');
+            gradient.addColorStop(0.5, '#27AE60');
+            gradient.addColorStop(1, '#229954');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Add gold stripe
+            const stripeHeight = currentFormat === 'phone' ? 200 : 150;
+            const stripeY = currentFormat === 'phone' ? canvas.height / 2 - 100 : canvas.height / 2 - 75;
+            ctx.fillStyle = '#F39C12';
+            ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
+
+            // Add shadow effect for stripe
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 10);
+
+            // Load and draw logo placeholder (semi-transparent circle for now)
+            const logoSize = currentFormat === 'phone' ? 200 : 150;
+            const logoX = canvas.width / 2;
+            const logoY = currentFormat === 'phone' ? 300 : 200;
+            
+            // Draw white circle background for logo
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(logoX, logoY, logoSize / 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Add text "LOGO HERE" in the circle
+            ctx.fillStyle = '#2ECC71';
+            ctx.font = 'bold 40px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('LOGO', logoX, logoY - 15);
+            ctx.fillText('HERE', logoX, logoY + 25);
+
+                // Draw motivation text
+                ctx.fillStyle = 'white';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                const textY = currentFormat === 'phone' ? canvas.height / 2 + 250 : canvas.height / 2 + 120;
+                const maxWidth = canvas.width - 120;
+                
+                // Word wrap function
+                function wrapText(text, maxWidth) {
+                    const words = text.split(' ');
+                    const lines = [];
+                    let currentLine = words[0];
+
+                    for (let i = 1; i < words.length; i++) {
+                        const word = words[i];
+                        const width = ctx.measureText(currentLine + " " + word).width;
+                        if (width < maxWidth) {
+                            currentLine += " " + word;
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = word;
+                        }
+                    }
+                    lines.push(currentLine);
+                    return lines;
+                }
+
+                // Dynamic font size based on text length - much larger, bold sizes
+                let fontSize = currentFormat === 'phone' ? 110 : 130;
+                if (motivation.length > 30) fontSize = currentFormat === 'phone' ? 95 : 110;
+                if (motivation.length > 50) fontSize = currentFormat === 'phone' ? 80 : 95;
+                if (motivation.length > 80) fontSize = currentFormat === 'phone' ? 70 : 80;
+
+                ctx.font = `bold ${fontSize}px Arial Black, Arial`;
+                const lines = wrapText(motivation.toUpperCase(), maxWidth);
+                
+                const lineHeight = fontSize * 1.3;
+                const totalHeight = lines.length * lineHeight;
+                let currentY = textY - (totalHeight / 2) + (lineHeight / 2);
+
+                // Draw text with shadow
+                lines.forEach(line => {
+                    // Shadow
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                    ctx.fillText(line, canvas.width / 2 + 3, currentY + 3);
+                    // Main text
+                    ctx.fillStyle = 'white';
+                    ctx.fillText(line, canvas.width / 2, currentY);
+                    currentY += lineHeight;
+                });
+
+                // Add "Castlelyons 2025" text at bottom
+                ctx.font = `bold ${currentFormat === 'phone' ? 45 : 55}px Arial`;
+                ctx.fillStyle = '#F39C12';
+                const bottomY = currentFormat === 'phone' ? canvas.height - 100 : canvas.height - 80;
+                ctx.fillText('CASTLELYONS 2025', canvas.width / 2 + 2, bottomY + 2);
+                ctx.fillStyle = 'white';
+                ctx.fillText('CASTLELYONS 2025', canvas.width / 2, bottomY);
+
+                // Show preview
+                generatedImageUrl = canvas.toDataURL('image/png');
+                document.getElementById('previewImage').src = generatedImageUrl;
+                document.getElementById('preview').classList.add('show');
+                
+                // Scroll to preview
+                document.getElementById('preview').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            };
+            
+            logo.onerror = function() {
+                alert('Error loading logo. Make sure logo.png is in the same folder as this file.');
+            };
+            
+            logo.src = 'logo.png';
+        }
+
+        function downloadImage() {
+            if (!generatedImageUrl) return;
+
+            const link = document.createElement('a');
+            const formatName = currentFormat === 'phone' ? 'phone' : 'desktop';
+            link.download = `castlelyons-motivation-${formatName}.png`;
+            link.href = generatedImageUrl;
+            link.click();
+        }
+
+        // Allow Enter key to generate (Ctrl+Enter for textarea)
+        document.getElementById('motivation').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                generateImage();
+            }
+        });
+    </script>
+</body>
+</html>
