@@ -285,16 +285,44 @@
                 const stripeHeight = currentFormat === 'phone' ? 200 : 150;
                 const stripeY = currentFormat === 'phone' ? canvas.height / 2 - 100 : canvas.height / 2 - 75;
                 ctx.fillStyle = '#F39C12';
-                ctx.fillRect(0, stripeY, canvas.width, canvas.height);
+                ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
 
-                // Add shadow effect for stripe
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-                ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 10);
+                // Add subtle shine effect on gold stripe
+                const shineGradient = ctx.createLinearGradient(0, stripeY, 0, stripeY + stripeHeight);
+                shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+                shineGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+                shineGradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+                ctx.fillStyle = shineGradient;
+                ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
 
-                // Draw the actual logo
+                // Add shadow effect for stripe depth
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+                ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 8);
+                
+                // Add subtle top highlight
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.fillRect(0, stripeY, canvas.width, 3);
+
+                // Draw the actual logo with white circular background
                 const logoSize = currentFormat === 'phone' ? 280 : 220;
                 const logoX = canvas.width / 2 - logoSize / 2;
                 const logoY = currentFormat === 'phone' ? 200 : 100;
+                
+                // Draw white circle behind logo with shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 30;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 10;
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, logoY + logoSize / 2, logoSize / 2 + 15, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
                 
                 ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
 
@@ -339,22 +367,54 @@
                 const totalHeight = lines.length * lineHeight;
                 let currentY = textY - (totalHeight / 2) + (lineHeight / 2);
 
-                // Draw text with shadow
+                // Draw text with enhanced shadow and outline
                 lines.forEach(line => {
-                    // Shadow
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-                    ctx.fillText(line, canvas.width / 2 + 3, currentY + 3);
+                    // Outer glow
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
+                    
+                    // Dark shadow
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                    ctx.fillText(line, canvas.width / 2 + 4, currentY + 4);
+                    
+                    // Reset shadow for main text
+                    ctx.shadowColor = 'transparent';
+                    ctx.shadowBlur = 0;
+                    
                     // Main text
                     ctx.fillStyle = 'white';
                     ctx.fillText(line, canvas.width / 2, currentY);
+                    
+                    // Subtle highlight on top
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                    ctx.fillText(line, canvas.width / 2, currentY - 2);
+                    
                     currentY += lineHeight;
                 });
 
-                // Add "Castlelyons 2025" text at bottom
+                // Add "Castlelyons 2025" text at bottom with enhanced styling
                 ctx.font = `bold ${currentFormat === 'phone' ? 45 : 55}px Arial`;
-                ctx.fillStyle = '#F39C12';
                 const bottomY = currentFormat === 'phone' ? canvas.height - 100 : canvas.height - 80;
+                
+                // Shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+                ctx.shadowBlur = 10;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 3;
+                
+                // Gold outline
+                ctx.fillStyle = '#F39C12';
                 ctx.fillText('CASTLELYONS 2025', canvas.width / 2 + 2, bottomY + 2);
+                
+                // Reset shadow
+                ctx.shadowColor = 'transparent';
+                ctx.shadowBlur = 0;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                // White main text
                 ctx.fillStyle = 'white';
                 ctx.fillText('CASTLELYONS 2025', canvas.width / 2, bottomY);
 
