@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial Black', Arial, sans-serif;
-            background: linear-gradient(135deg, #2ECC71 0%, #F39C12 100%);
+            background: linear-gradient(135deg, #2C9752 0%, #CF9412 100%);
             min-height: 100vh;
             padding: 20px;
             display: flex;
@@ -31,7 +31,7 @@
         }
 
         h1 {
-            color: #2ECC71;
+            color: #2C9752;
             text-align: center;
             margin-bottom: 10px;
             font-size: 2em;
@@ -40,7 +40,7 @@
 
         .subtitle {
             text-align: center;
-            color: #F39C12;
+            color: #CF9412;
             font-size: 1.2em;
             margin-bottom: 30px;
             font-weight: bold;
@@ -57,7 +57,7 @@
         textarea {
             width: 100%;
             padding: 15px;
-            border: 3px solid #2ECC71;
+            border: 3px solid #2C9752;
             border-radius: 10px;
             font-size: 1.1em;
             font-family: Arial, sans-serif;
@@ -68,7 +68,7 @@
 
         textarea:focus {
             outline: none;
-            border-color: #F39C12;
+            border-color: #CF9412;
         }
 
         .format-section {
@@ -84,7 +84,7 @@
 
         .format-btn {
             padding: 15px;
-            border: 3px solid #2ECC71;
+            border: 3px solid #2C9752;
             background: white;
             border-radius: 10px;
             font-weight: bold;
@@ -94,20 +94,20 @@
         }
 
         .format-btn:hover {
-            background: #2ECC71;
+            background: #2C9752;
             color: white;
         }
 
         .format-btn.active {
-            background: #2ECC71;
+            background: #2C9752;
             color: white;
-            border-color: #2ECC71;
+            border-color: #2C9752;
         }
 
         .generate-btn {
             width: 100%;
             padding: 20px;
-            background: linear-gradient(135deg, #2ECC71, #27AE60);
+            background: linear-gradient(135deg, #2C9752, #1a7a3f);
             color: white;
             border: none;
             border-radius: 10px;
@@ -121,7 +121,7 @@
 
         .generate-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4);
+            box-shadow: 0 10px 30px rgba(44, 151, 82, 0.4);
         }
 
         .generate-btn:active {
@@ -139,7 +139,7 @@
         }
 
         .preview h3 {
-            color: #2ECC71;
+            color: #2C9752;
             margin-bottom: 15px;
         }
 
@@ -152,7 +152,7 @@
 
         .download-btn {
             padding: 15px 40px;
-            background: linear-gradient(135deg, #F39C12, #E67E22);
+            background: linear-gradient(135deg, #CF9412, #a07710);
             color: white;
             border: none;
             border-radius: 10px;
@@ -165,7 +165,7 @@
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
+            box-shadow: 0 10px 30px rgba(207, 148, 18, 0.4);
         }
 
         canvas {
@@ -177,7 +177,7 @@
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
-            border-left: 4px solid #F39C12;
+            border-left: 4px solid #CF9412;
         }
 
         .info p {
@@ -273,80 +273,46 @@
             const logo = new Image();
             logo.crossOrigin = 'anonymous';
             logo.onload = function() {
-                // Draw background - solid green (matching the example)
-                ctx.fillStyle = '#2ECC71';
+                // Draw background - exact green from specs
+                ctx.fillStyle = '#2C9752';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Add gold stripe
+                // Calculate stripe dimensions
                 const stripeHeight = currentFormat === 'phone' ? 200 : 150;
                 const stripeY = currentFormat === 'phone' ? canvas.height / 2 - 100 : canvas.height / 2 - 75;
-                ctx.fillStyle = '#D4A017';
+
+                // Draw bottom part of orange band
+                ctx.fillStyle = '#CF9412';
                 ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
 
-                // Add subtle shine effect on gold stripe
-                const shineGradient = ctx.createLinearGradient(0, stripeY, 0, stripeY + stripeHeight);
-                shineGradient.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
-                shineGradient.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
-                shineGradient.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
-                ctx.fillStyle = shineGradient;
-                ctx.fillRect(0, stripeY, canvas.width, stripeHeight);
+                // Draw top part of orange band (slight highlight)
+                const highlightHeight = stripeHeight * 0.5;
+                ctx.fillStyle = '#D19A20';
+                ctx.fillRect(0, stripeY, canvas.width, highlightHeight);
 
-                // Add shadow effect for stripe depth
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-                ctx.fillRect(0, stripeY + stripeHeight, canvas.width, 8);
-                
-                // Add subtle top highlight
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
-                ctx.fillRect(0, stripeY - 3, canvas.width, 3);
+                // Add top gloss overlay
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
+                ctx.fillRect(0, stripeY, canvas.width, highlightHeight * 0.5);
 
-                // Draw the actual logo with white circular background
+                // Add bottom inner-shadow overlay with blur
+                const shadowGradient = ctx.createLinearGradient(0, stripeY + stripeHeight - 30, 0, stripeY + stripeHeight);
+                shadowGradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+                shadowGradient.addColorStop(1, 'rgba(0, 0, 0, 0.24)');
+                ctx.fillStyle = shadowGradient;
+                ctx.fillRect(0, stripeY + stripeHeight - 30, canvas.width, 30);
+
+                // Draw the logo (transparent PNG, no background)
                 const logoSize = currentFormat === 'phone' ? 280 : 220;
                 const logoX = canvas.width / 2 - logoSize / 2;
-                const logoY = currentFormat === 'phone' ? 200 : 100;
-                
-                // Draw white rounded square behind logo with shadow
-                const boxPadding = 30;
-                const boxSize = logoSize + boxPadding * 2;
-                const boxX = canvas.width / 2 - boxSize / 2;
-                const boxY = logoY - boxPadding;
-                const borderRadius = 20;
-                
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                ctx.shadowBlur = 20;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 10;
-                ctx.fillStyle = 'white';
-                
-                // Rounded rectangle for logo background
-                ctx.beginPath();
-                ctx.moveTo(boxX + borderRadius, boxY);
-                ctx.lineTo(boxX + boxSize - borderRadius, boxY);
-                ctx.quadraticCurveTo(boxX + boxSize, boxY, boxX + boxSize, boxY + borderRadius);
-                ctx.lineTo(boxX + boxSize, boxY + boxSize - borderRadius);
-                ctx.quadraticCurveTo(boxX + boxSize, boxY + boxSize, boxX + boxSize - borderRadius, boxY + boxSize);
-                ctx.lineTo(boxX + borderRadius, boxY + boxSize);
-                ctx.quadraticCurveTo(boxX, boxY + boxSize, boxX, boxY + boxSize - borderRadius);
-                ctx.lineTo(boxX, boxY + borderRadius);
-                ctx.quadraticCurveTo(boxX, boxY, boxX + borderRadius, boxY);
-                ctx.closePath();
-                ctx.fill();
-                
-                // Reset shadow
-                ctx.shadowColor = 'transparent';
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
+                const logoY = currentFormat === 'phone' ? 150 : 80;
                 
                 ctx.drawImage(logo, logoX, logoY, logoSize, logoSize);
 
-                // Calculate text box dimensions
-                let fontSize = currentFormat === 'phone' ? 110 : 130;
-                if (motivation.length > 30) fontSize = currentFormat === 'phone' ? 95 : 110;
-                if (motivation.length > 50) fontSize = currentFormat === 'phone' ? 80 : 95;
-                if (motivation.length > 80) fontSize = currentFormat === 'phone' ? 70 : 80;
-
-                ctx.font = `bold ${fontSize}px Arial Black, Arial`;
-                const maxWidth = canvas.width - 160;
+                // Calculate headline font size (10.8% of canvas width)
+                const headlineFontSize = Math.round(canvas.width * 0.108);
+                ctx.font = `bold ${headlineFontSize}px Arial, 'DejaVu Sans', sans-serif`;
+                
+                const maxWidth = canvas.width - 120;
                 
                 // Word wrap function
                 function wrapText(text, maxWidth) {
@@ -369,23 +335,25 @@
                 }
 
                 const lines = wrapText(motivation.toUpperCase(), maxWidth);
-                const lineHeight = fontSize * 1.2;
+                const lineHeight = headlineFontSize * 1.2;
                 const totalTextHeight = lines.length * lineHeight;
                 
                 // Position the text box
-                const textBoxY = currentFormat === 'phone' ? canvas.height / 2 + 200 : canvas.height / 2 + 50;
-                const textBoxPadding = currentFormat === 'phone' ? 60 : 50;
+                const textBoxY = currentFormat === 'phone' ? canvas.height / 2 + 220 : canvas.height / 2 + 80;
+                const textBoxPadding = currentFormat === 'phone' ? 50 : 40;
                 const textBoxWidth = canvas.width - 80;
                 const textBoxHeight = totalTextHeight + textBoxPadding * 2;
                 const textBoxX = 40;
                 const textBoxRadius = 40;
                 
-                // Draw dark rounded rectangle for text background
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
-                ctx.shadowBlur = 25;
+                // Draw text shadow first (blur effect)
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.63)';
+                ctx.shadowBlur = 22;
                 ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 15;
-                ctx.fillStyle = 'rgba(20, 35, 30, 0.92)';
+                ctx.shadowOffsetY = 10;
+                
+                // Draw dark plate behind headline - exact opacity
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.59)';
                 
                 ctx.beginPath();
                 ctx.moveTo(textBoxX + textBoxRadius, textBoxY);
@@ -406,39 +374,44 @@
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 0;
 
-                // Draw motivation text inside the dark box
-                ctx.fillStyle = 'white';
+                // Draw headline text - white with 2px white stroke
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
+                ctx.strokeStyle = '#FFFFFF';
+                ctx.lineWidth = 2;
+                ctx.fillStyle = '#FFFFFF';
                 
                 let currentY = textBoxY + textBoxPadding + (totalTextHeight / 2) - ((lines.length - 1) * lineHeight / 2);
 
-                // Draw text - clean and simple white text
                 lines.forEach(line => {
-                    ctx.fillStyle = 'white';
+                    // Stroke first (outline)
+                    ctx.strokeText(line, canvas.width / 2, currentY);
+                    // Then fill
                     ctx.fillText(line, canvas.width / 2, currentY);
                     currentY += lineHeight;
                 });
 
-                // Add "Castlelyons 2025" text at bottom - gold color to match stripe
-                ctx.font = `bold ${currentFormat === 'phone' ? 50 : 60}px Arial Black, Arial`;
-                const bottomY = currentFormat === 'phone' ? canvas.height - 80 : canvas.height - 60;
+                // Add footer text "CASTLELYONS 2025"
+                const footerFontSize = currentFormat === 'phone' ? 
+                    Math.round(canvas.width * 0.05) : 
+                    Math.round(canvas.width * 0.03);
                 
-                // Simple shadow
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-                ctx.shadowBlur = 8;
+                ctx.font = `bold ${footerFontSize}px Arial, 'DejaVu Sans', sans-serif`;
+                const footerY = currentFormat === 'phone' ? canvas.height - 70 : canvas.height - 50;
+                
+                // Draw footer glow (underlay) - blurred
+                ctx.shadowColor = '#FFB03B';
+                ctx.shadowBlur = 20;
                 ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 3;
+                ctx.shadowOffsetY = 0;
                 
-                // Gold text
-                ctx.fillStyle = '#D4A017';
-                ctx.fillText('CASTLELYONS 2025', canvas.width / 2, bottomY);
+                // Footer text color
+                ctx.fillStyle = '#FFD78C';
+                ctx.fillText('CASTLELYONS 2025', canvas.width / 2, footerY);
                 
                 // Reset shadow
                 ctx.shadowColor = 'transparent';
                 ctx.shadowBlur = 0;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 0;
 
                 // Show preview
                 generatedImageUrl = canvas.toDataURL('image/png');
